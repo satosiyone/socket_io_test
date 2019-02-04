@@ -15,8 +15,31 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+    var userName = '';
     $(function () {
         var socket = io();
+        //ログイン
+        //ログイン画面表示
+        $('#loginForm').show();
+        $('#chatForm').hide();
+        
+        //ログイン処理
+        $('#btnLogin').on('click', function(e){
+            userName = $('#userName').val();
+            if(userName){
+                //チャット画面表示
+                $('#loginForm').hide();
+                $('#chatForm').show();
+                //ユーザ情報をサーバへ通知する
+                socket.emit('login',{
+                    userID: socket.id,
+                    userName: userName
+                });
+            }
+            e.preventDefault();
+        });
+
+        //チャット
         //メッセージを送信したとき
         $('form').submit(function(e){
             e.preventDefault(); // prevents page reloading
@@ -34,7 +57,13 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <form id="loginForm">
+        <div>
+            <input id="username" name="username" type="text" class="form-control" placeholder="ユーザ名" autofocus />
+            <button id="btnLogin">ログイン</button>
+        </div>
     </form>
   </body>
 </html>

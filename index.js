@@ -14,6 +14,25 @@ io.on('connection', function(socket){
     socket.broadcast.emit('hi');
 });
 
+// ログイン
+io.on('connection', function(socket){
+    var loginUsers = []; //ログインユーザ
+
+    // ログイン処理
+    socket.on('login', function(userInfo){
+        loginUsers[userInfo.userID] = userInfo.userName;
+    });
+
+    // メッセージ送信処理
+    socket.on('chat message', function(msg){
+        userName = loginUsers[socket.id];
+        io.emit('chat message',{
+            userName: userName,
+            message: msg
+        });
+    });
+});
+
 // 同時全員送信
 io.on('connection', function(socket){
     socket.on('chat message', function(msg){
