@@ -1,7 +1,7 @@
 {
-  "name": "pulse-sensor",
+  "name": "majori",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "majori browser version",
   "dependencies": {
     "express": "^4.10.2",
     "socket.io": "^2.2.0"
