@@ -12,7 +12,7 @@
         - チャットフォームが表示
         - `ユーザ情報` 送信
             - emit `login`
-                - userID: socket.id // io()でidが取得できる
+                - userID: socket.id // クライアントが発行した `io()` でidが取得できる
                 - userName: userName
     - .js
         - on `connection`
