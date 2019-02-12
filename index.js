@@ -2,7 +2,8 @@ var app = require('express')();
 var http  = require('http').Server(app);
 var io = require('socket.io')(http);
 const PORT = process.env.PORT || 3000;
-var loginUsers = []; //ログインユーザ // connection内で宣言すると毎回初期化される
+//var loginUsers = []; // この書き方だと SS -> CS で undefined になる
+var loginUsers = {}; //ログインユーザ // connection内で宣言すると毎回初期化される
 
 // Nodeサーバにアクセスがあるとindex.htmlへ遷移
 app.get('/', function(req,res){
@@ -14,8 +15,8 @@ io.on('connection', function(socket){
     // ログイン処理
     socket.on('login', function(userInfo){
         loginUsers[userInfo.userID] = userInfo.userName;
-        for (var i in loginUsers) {
-            console.log("SS:list[" + i + "]=", loginUsers[i]);
+        for(let i in loginUsers){
+            console.log('A:ユーザーリスト = ' + loginUsers[i]);
         }
     });
 
@@ -27,28 +28,7 @@ io.on('connection', function(socket){
             message: msg
         });
         // ユーザリスト表示
-        console.log('SS:メッセージ送信');
-        var length = Object.keys(loginUsers).length;
-        console.log('SS:length = ' + length);
-        // var str = '文字列'
-        // var obj = {A:'aaa',B:'bbb'};
-        var obj = [];
-        obj['AAA'] = 'a1';
-        obj['BBB'] = 'b2';
-        var length = Object.keys(obj).length;
-        for(var i in obj){
-            console.log('obj[' + i +'] = ' + obj[i]);
-        };
-        console.log('SS:length obj = ' + length);
-        // io.emit('user list', obj);
-
-        // テスト
-        var obj1 = { hoge: 'hoge' };
-        io.emit('test1', obj1);
-
-        var obj2 = {};
-        obj['fuga'] = 'fuga';        
-        io.emit('test2', obj2);
+        io.emit('user list', loginUsers);
     });
 });
 

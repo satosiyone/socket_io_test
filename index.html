@@ -54,31 +54,7 @@
 
             //ユーザリスト表示
             socket.on('user list', function(loginUsers){
-                //console.log('FS:type表示');
-                //console.log('str = ' + str);
-                
-                console.log('FS:typeof loginUsers = ' + (typeof loginUsers) );
-                var length = Object.keys(loginUsers).length;
-                console.log('length = ' + length);
-                console.log('[ID] = ' + socket.id); 
-                //console.log('loginUsers[ID] = ' + loginUsers[socket.id]);                
-            });
 
-            //test1
-            socket.on('test1', function(obj1){
-                var length = Object.keys(obj1).length;
-                console.log('obj1.length = ' + length); // obj1.length = 1
-                for(var i in obj1){
-                 console.log('obj[' + i +'] = ' + obj1[i]); // obj[hoge] = hoge
-                };
-            });
-            //test2
-            socket.on('test2', function(obj2){
-                var length = Object.keys(obj2).length;
-                console.log('obj2.length = ' + length); // obj2.length = 0
-                for(var i in obj2){
-                 console.log('obj[' + i +'] = ' + obj2[i]);
-                };
             });
         });
     </script>
