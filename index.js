@@ -10,11 +10,13 @@ app.get('/', function(req,res){
     res.sendFile(__dirname + '/index.html');
 });
 
-// ログイン
+// connection
 io.on('connection', function(socket){
     // ログイン処理
     socket.on('login', function(userInfo){
         loginUsers[userInfo.userID] = userInfo.userName;
+        // ユーザリスト表示
+        io.emit('user list', loginUsers);
     });
 
     // メッセージ送信処理
@@ -24,11 +26,16 @@ io.on('connection', function(socket){
             userName: userName,
             message: msg
         });
-        // ユーザリスト表示
-        io.emit('user list', loginUsers);
-        for(var i in loginUsers){
-            console.log('ユーザーリスト ' + loginUsers[i]);
-        };
+    });
+
+    // STARTボタン押下時
+    socket.on('btnStart',function(){
+        let htmlStr = '<h1>';
+        let odai = ['A:夏 B:冬','A:たけのこ B:キノコ','A:父親 B:母親'];
+        let rand = Math.floor(Math.random() * 3);
+        htmlStr += odai[rand] + '</h1>';
+        //お題表示
+        io.emit('odai', htmlStr);
     });
 });
 

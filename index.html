@@ -54,13 +54,30 @@
 
             //ユーザリスト表示
             socket.on('user list', function(loginUsers){
-                var htmlStr = '<ul>';
+                let htmlStr = '<ul>';
                 for(var i in loginUsers){
                     htmlStr += '<li>' + loginUsers[i] + '</li>';
                 }; 
                 htmlStr += '</ul>';
-                console.log('htmlStr = ' + htmlStr);
                 $('#userList').html(htmlStr);
+            });
+            
+            //STARTボタン押下
+            $('#btnStart').on('click', function(e){
+                socket.emit('btnStart');
+            });
+     
+            //お題表示
+            socket.on('odai', function(htmlStr){
+                $('#theme').html(htmlStr);
+            });
+
+            // A/Bボタン
+            $('#btnA').on('click', function(e){
+                socket.emit('btnA');
+            });
+            $('#btnB').on('click', function(e){
+                socket.emit('btnB');
             });
         });
     </script>
@@ -85,7 +102,21 @@
         <div>
             <!-- 入室者リスト -->
             <h1>入室者リスト</h1>
-                <ul id="userList"></ul>
+            <ul id="userList"></ul>
+        </div>
+        <div>
+            <!-- GOボタン -->
+            <button id="btnStart">START</button>
+        </div>
+        <div>
+            <!-- お題表示 -->
+            <h1>お題</h1>
+            <h2 id="theme"></h2>
+        </div>
+        <div>
+            <!-- A/Bボタン -->
+            <button id="btnA">A</button>
+            <button id="btnB">B</button>
         </div>
     </body>
 </html>
