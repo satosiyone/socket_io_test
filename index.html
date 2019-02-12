@@ -47,14 +47,20 @@
                 return false;
             });
 
-            // クライアントAのemitに対して、クライアントBのonでメッセージを受け取る
+            //クライアントAのemitに対して、クライアントBのonでメッセージを受け取る
             socket.on('chat message', function(msg){
                 $('#messages').append($('<li>').text(msg.userName + ':' + msg.message));
             });
 
             //ユーザリスト表示
             socket.on('user list', function(loginUsers){
-
+                var htmlStr = '<ul>';
+                for(var i in loginUsers){
+                    htmlStr += '<li>' + loginUsers[i] + '</li>';
+                }; 
+                htmlStr += '</ul>';
+                console.log('htmlStr = ' + htmlStr);
+                $('#userList').html(htmlStr);
             });
         });
     </script>

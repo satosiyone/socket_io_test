@@ -15,9 +15,6 @@ io.on('connection', function(socket){
     // ログイン処理
     socket.on('login', function(userInfo){
         loginUsers[userInfo.userID] = userInfo.userName;
-        for(let i in loginUsers){
-            console.log('A:ユーザーリスト = ' + loginUsers[i]);
-        }
     });
 
     // メッセージ送信処理
@@ -29,6 +26,9 @@ io.on('connection', function(socket){
         });
         // ユーザリスト表示
         io.emit('user list', loginUsers);
+        for(var i in loginUsers){
+            console.log('ユーザーリスト ' + loginUsers[i]);
+        };
     });
 });
 
