@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 //var loginUsers = []; // この書き方だと SS -> CS へ emit するときに undefined になる // 半日ハマった
 var loginUsers = {}; //ログインユーザ // connection内で宣言すると毎回初期化される
 var answers = {}; // 回答
+var votes = {}; // 投票
 
 // Nodeサーバにアクセスがあるとindex.htmlへ遷移
 app.get('/', function(req,res){
@@ -57,8 +58,9 @@ io.on('connection', function(socket){
             let key = answers[id];
             counts[key] = (counts[key]) ? counts[key] + 1 : 1;
         };
-        let htmlStr = 'A: ' + counts['A'] + ' B: ' + counts['B'];
-        io.emit('btnResults', htmlStr);
+        let htmlStrA = 'A: ' + (counts['A'] ? counts['A'] : '0');
+        let htmlStrB = ' B: ' + (counts['B'] ? counts['B'] : '0');
+        io.emit('btnResults', htmlStrA + htmlStrB);
     });
 
     // リセットボタン押下時
@@ -66,6 +68,26 @@ io.on('connection', function(socket){
         loginUsers = {};
         answers = {};
     });
+
+    // 投票ボタン押下時
+    socket.on('btnVote',function(voteFrom, voteTo){
+        votes[voteFrom] = voteTo;
+    });
+
+    // 開票結果ボタン押下時
+    socket.on('btnOpen',function(id){
+        let counts = {};
+        let htmlStr = ''
+        for(let id in votes){
+            let key = votes[id];
+            counts[key] = (counts[key]) ? counts[key] + 1 : 1;
+        };
+        for(let id in loginUsers){
+            htmlStr += loginUsers[id] + ' : ' + counts[id] + ' ';
+        };
+        console.log('htmlStrl=' + htmlStr);
+        io.emit('btnOpen', htmlStr);
+    });    
 });
 
 http.listen((PORT), function(){
