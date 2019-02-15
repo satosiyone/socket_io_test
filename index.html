@@ -74,25 +74,43 @@
                 $('#theme').html(htmlStr);
             });
 
-            // A/Bボタン
+            // Aボタン
             $('#btnA').on('click', function(e){
                 socket.emit('btnA', socket.id);
-                $('#'+socket.id).addClass('active');
-                if(!$(this).hasClass('active')){
-                    $(this).addClass('active');
+            });
+
+            socket.on('btnA', function(id){
+                $('#' + id).addClass('active');
+                if(!$('#btnA').hasClass('active')){
+                    $('#btnA').addClass('active');
                     $('#btnB').removeClass('active');
                 };
             });
+
+            // Bボタン
             $('#btnB').on('click', function(e){
                 socket.emit('btnB', socket.id);
-                $('#'+ socket.id).addClass('active');
-                if(!$(this).hasClass('active')){
-                    $(this).addClass('active');
+            });
+
+            socket.on('btnB', function(id){
+                $('#' + id).addClass('active');
+                if(!$('#btnB').hasClass('active')){
+                    $('#btnB').addClass('active');
                     $('#btnA').removeClass('active');
                 };
             });
 
-            //リセットボタン
+            // 集計ボタン
+            $('#btnResults').on('click', function(){
+                socket.emit('btnResults');
+            });
+
+            socket.on('btnResults', function(htmlStr){
+                $('#results').html(htmlStr);                
+            });
+            
+
+            // リセットボタン
             $('#btnReset').on('click', function(e){
                 socket.emit('btnReset');
             });
@@ -131,8 +149,8 @@
         </div>
         <div>
             <!-- お題表示 -->
-            <h1>お題</h1>
-            <h2 id="theme"></h2>
+            <h2>お題</h2>
+            <h1 id="theme"></h1>
         </div>
         <div>
             <!-- A/Bボタン -->
@@ -140,8 +158,17 @@
             <button id="btnB">B</button>
         </div>
         <div>
+            <!-- 集計ボタン -->
+            <button id="btnResults">集計</button>
+        </div>
+        <div>
             <!-- リセットボタン -->
             <button id="btnReset">Reset</button>
         </div>
+        <div>
+                <!-- 集計結果 -->
+                <h1>集計結果</h1>
+                <h2 id="results"></h2>
+            </div>
     </body>
 </html>

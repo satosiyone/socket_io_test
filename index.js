@@ -4,6 +4,7 @@ var io = require('socket.io')(http);
 const PORT = process.env.PORT || 3000;
 //var loginUsers = []; // この書き方だと SS -> CS へ emit するときに undefined になる // 半日ハマった
 var loginUsers = {}; //ログインユーザ // connection内で宣言すると毎回初期化される
+var answers = {}; // 回答
 
 // Nodeサーバにアクセスがあるとindex.htmlへ遷移
 app.get('/', function(req,res){
@@ -30,21 +31,40 @@ io.on('connection', function(socket){
 
     // STARTボタン押下時
     socket.on('btnStart',function(){
-        let htmlStr = '<h1>';
-        let odai = ['A:夏 B:冬','A:たけのこ B:キノコ','A:父親 B:母親'];
+        let htmlStr = '';
+        let odai = ['A:夏 B:冬', 'A:たけのこ B:キノコ', 'A:父親 B:母親'];
         let rand = Math.floor(Math.random() * 3);
-        htmlStr += odai[rand] + '</h1>';
+        htmlStr += odai[rand];
         //お題表示
         io.emit('odai', htmlStr);
     });
 
     // A/Bボタン押下時
-    socket.on('btnA',function(){
+    socket.on('btnA',function(id){
+        io.emit('btnA', id);
+        answers[id] = 'A';
+    });
+
+    socket.on('btnB',function(id){
+        io.emit('btnB', id);
+        answers[id] = 'B';
+    });
+
+    // 集計ボタン押下時
+    socket.on('btnResults',function(){
+        let counts = {};
+        for(let id in answers){
+            let key = answers[id];
+            counts[key] = (counts[key]) ? counts[key] + 1 : 1;
+        };
+        let htmlStr = 'A: ' + counts['A'] + ' B: ' + counts['B'];
+        io.emit('btnResults', htmlStr);
     });
 
     // リセットボタン押下時
     socket.on('btnReset',function(){
         loginUsers = {};
+        answers = {};
     });
 });
 
