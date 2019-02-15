@@ -2,7 +2,7 @@ var app = require('express')();
 var http  = require('http').Server(app);
 var io = require('socket.io')(http);
 const PORT = process.env.PORT || 3000;
-//var loginUsers = []; // この書き方だと SS -> CS で undefined になる
+//var loginUsers = []; // この書き方だと SS -> CS へ emit するときに undefined になる // 半日ハマった
 var loginUsers = {}; //ログインユーザ // connection内で宣言すると毎回初期化される
 
 // Nodeサーバにアクセスがあるとindex.htmlへ遷移
@@ -36,6 +36,15 @@ io.on('connection', function(socket){
         htmlStr += odai[rand] + '</h1>';
         //お題表示
         io.emit('odai', htmlStr);
+    });
+
+    // A/Bボタン押下時
+    socket.on('btnA',function(){
+    });
+
+    // リセットボタン押下時
+    socket.on('btnReset',function(){
+        loginUsers = {};
     });
 });
 

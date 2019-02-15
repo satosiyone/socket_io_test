@@ -7,6 +7,7 @@
       form { background: #000; padding: 3px; width: 80%;}
       form input { border: 0; padding: 10px; width: 60%; margin-right: .5%; }
       form button { width: 20%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      .active { background: rgb(243, 190, 50);}
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
@@ -17,7 +18,7 @@
         var socket = io();
         var userName = '';
         $(function () {
-            //ログイン
+        //ログイン
             //ログイン画面表示
             $('#loginForm').show();
             $('#chatForm').hide();
@@ -38,8 +39,8 @@
                 e.preventDefault();
             });
 
-            //チャット
-            //メッセージを送信したとき
+        //チャット
+            // メッセージを送信したとき
             $('form').submit(function(e){
                 e.preventDefault(); // prevents page reloading
                 socket.emit('chat message', $('#m').val());
@@ -47,7 +48,7 @@
                 return false;
             });
 
-            //クライアントAのemitに対して、クライアントBのonでメッセージを受け取る
+            // クライアントAのemitに対して、クライアントBのonでメッセージを受け取る
             socket.on('chat message', function(msg){
                 $('#messages').append($('<li>').text(msg.userName + ':' + msg.message));
             });
@@ -55,29 +56,45 @@
             //ユーザリスト表示
             socket.on('user list', function(loginUsers){
                 let htmlStr = '<ul>';
-                for(var i in loginUsers){
-                    htmlStr += '<li>' + loginUsers[i] + '</li>';
+                for(var id in loginUsers){
+                    htmlStr += '<li id=' + id + '>' + loginUsers[id] + '</li>';
                 }; 
                 htmlStr += '</ul>';
                 $('#userList').html(htmlStr);
             });
-            
-            //STARTボタン押下
+
+        //ボタン
+            // STARTボタン押下
             $('#btnStart').on('click', function(e){
                 socket.emit('btnStart');
             });
      
-            //お題表示
+            // お題表示
             socket.on('odai', function(htmlStr){
                 $('#theme').html(htmlStr);
             });
 
             // A/Bボタン
             $('#btnA').on('click', function(e){
-                socket.emit('btnA');
+                socket.emit('btnA', socket.id);
+                $('#'+socket.id).addClass('active');
+                if(!$(this).hasClass('active')){
+                    $(this).addClass('active');
+                    $('#btnB').removeClass('active');
+                };
             });
             $('#btnB').on('click', function(e){
-                socket.emit('btnB');
+                socket.emit('btnB', socket.id);
+                $('#'+ socket.id).addClass('active');
+                if(!$(this).hasClass('active')){
+                    $(this).addClass('active');
+                    $('#btnA').removeClass('active');
+                };
+            });
+
+            //リセットボタン
+            $('#btnReset').on('click', function(e){
+                socket.emit('btnReset');
             });
         });
     </script>
@@ -85,6 +102,9 @@
     <body>
         <div>
             <!-- ログイン -->
+            <div>
+                <h1>名前を入れてください</h1>
+            </div>
             <form id="loginForm">
                 <div>
                     <input id="username" name="username" type="text" class="form-control"
@@ -93,6 +113,7 @@
                 </div>
             </form>
             <!-- チャット -->
+            <h1>チャット欄</h1>
             <ul id="messages"></ul>
             <form action="#" id="chatForm">
                 <input id="m" autocomplete="off" autofocus />
@@ -117,6 +138,10 @@
             <!-- A/Bボタン -->
             <button id="btnA">A</button>
             <button id="btnB">B</button>
+        </div>
+        <div>
+            <!-- リセットボタン -->
+            <button id="btnReset">Reset</button>
         </div>
     </body>
 </html>
