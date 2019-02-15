@@ -71,21 +71,30 @@ io.on('connection', function(socket){
 
     // 投票ボタン押下時
     socket.on('btnVote',function(voteFrom, voteTo){
+        // key:投票した人 value:投票相手
         votes[voteFrom] = voteTo;
     });
 
     // 開票結果ボタン押下時
-    socket.on('btnOpen',function(id){
+    socket.on('btnOpen',function(){
         let counts = {};
         let htmlStr = ''
-        for(let id in votes){
-            let key = votes[id];
+        for(let i in votes){
+            // 投票した人のIDの数だけループ
+            // 投票相手のIDをkeyに入れる
+            let key = votes[i];
             counts[key] = (counts[key]) ? counts[key] + 1 : 1;
         };
+        //test 
+        for(let id of Object.keys(counts)){
+            // id は 投票された人のID
+            console.log(' id = ' + id + ' counts=' + counts[id]);
+        };
+
         for(let id in loginUsers){
             htmlStr += loginUsers[id] + ' : ' + counts[id] + ' ';
         };
-        console.log('htmlStrl=' + htmlStr);
+        console.log('htmlStr=' + htmlStr);
         io.emit('btnOpen', htmlStr);
     });    
 });
