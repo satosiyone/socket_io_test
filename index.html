@@ -40,6 +40,11 @@
                 e.preventDefault();
             });
 
+            //ユーザリスト表示
+            socket.on('user list', function(htmlStr){
+                $('#userList').html(htmlStr);
+            });            
+
         //チャット
             // メッセージを送信したとき
             $('form').submit(function(e){
@@ -54,25 +59,22 @@
                 $('#messages').append($('<li>').text(msg.userName + ':' + msg.message));
             });
 
-            //ユーザリスト表示
-            socket.on('user list', function(loginUsers){
-                let htmlStr = '<ul>';
-                for(var id in loginUsers){
-                    htmlStr += '<li id=list_' + id + '>' + loginUsers[id].name + '</li>';
-                    htmlStr += '<button class=btnVote id=btn_' + id + '>投票</button>'
-                };
-                htmlStr += '</ul>';
-                $('#userList').html(htmlStr);
-            });
-
         //ボタン
             // 投票ボタン
-            //$('.event').on('click', function(){
             $(document).on('click', '.btnVote', function(){
                 $('.voteActive').removeClass('voteActive');
                 $(this).addClass('voteActive');
                 let id = $(this).attr('id').replace('btn_', '');
-                socket.emit('btnVote', id);
+                socket.emit('btnVote', socket.id, id);
+            });
+
+            // 正体を暴くボタン
+            $(document).on('click', '.btnHang', function(){
+                let id = $(this).attr('id').replace('hang_', '');
+                socket.emit('btnHang', id);
+            });
+            socket.on('btnHang', function(id, identity){
+                $('#hang_'+id).text(identity);
             });
 
             // STARTボタン押下
