@@ -7,6 +7,12 @@ var loginUsers = {}; //ログインユーザ // connection内で宣言すると�
 var answers = {}; // 回答
 var votes = {}; // 投票
 
+// たぶんデータ構造こうしたほうがいい
+// objList= {id, A/Bどちら回答したか, 誰に投票したか}
+// sample = { XAIOFE3eF :
+//           (A, XJSAFI9sajd)
+//          }
+
 // Nodeサーバにアクセスがあるとindex.htmlへ遷移
 app.get('/', function(req,res){
     res.sendFile(__dirname + '/index.html');
@@ -85,18 +91,22 @@ io.on('connection', function(socket){
             let key = votes[i];
             counts[key] = (counts[key]) ? counts[key] + 1 : 1;
         };
-        //test 
+        
+        /*test 
         for(let id of Object.keys(counts)){
             // id は 投票された人のID
             console.log(' id = ' + id + ' counts=' + counts[id]);
         };
+        */
 
+        // votes = {aID: bID, bID:aID, cID:bID};
+        // A:1 B:2 C:0 
         for(let id in loginUsers){
             htmlStr += loginUsers[id] + ' : ' + counts[id] + ' ';
         };
         console.log('htmlStr=' + htmlStr);
         io.emit('btnOpen', htmlStr);
-    });    
+    });
 });
 
 http.listen((PORT), function(){

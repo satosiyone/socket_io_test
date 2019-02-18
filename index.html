@@ -58,7 +58,7 @@
             socket.on('user list', function(loginUsers){
                 let htmlStr = '<ul>';
                 for(var id in loginUsers){
-                    htmlStr += '<li id=list_' + id + '>' + loginUsers[id] + '</li>';
+                    htmlStr += '<li id=list_' + id + '>' + loginUsers[id].name + '</li>';
                     htmlStr += '<button class=btnVote id=btn_' + id + '>投票</button>'
                 };
                 htmlStr += '</ul>';
